@@ -9,19 +9,22 @@ const app = express();
 app.use(cors());
 app.set('view engine', 'ejs');
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + './public'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req,res) =>{
-  res.render('pages/index');
+  res.render('./pages/index');
 });
 
 
-app.get('/search/show',(req,res)=>{
-  res.render('pages/searches/show');
+app.get('/search/new',(req,res)=>{
+  res.render('searches/new');
 });
+// app.get('/search/new',(req,res)=>{
+//   res.render('searches/new', req.body);
+// });
 
 app.post('/search', (req, res) => {
   let bookarr = [];
@@ -37,16 +40,16 @@ app.post('/search', (req, res) => {
         const book= new Book(element);
         bookarr.push(book);
       });
-      res.send(bookarr);
+      res.render('searches/show' , {search:bookarr});
     });
 });
 
 
 function Book(details){
-  this.img = details.volume.imageLinks.smallThumbnail;
-  this.title = details.volume.title;
-  this.authors = details.volume.authors;
-  this.description = details.volume.description;
+  this.img = details.volumeInfo.imageLinks.smallThumbnail;
+  this.title = details.volumeInfo.title;
+  this.authors = details.volumeInfo.authors;
+  this.description = details.volumeInfo.description;
   Book.all.push(this);
 }
 Book.all = [];
